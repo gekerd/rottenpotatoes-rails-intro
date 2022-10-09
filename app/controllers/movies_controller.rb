@@ -9,14 +9,26 @@ class MoviesController < ApplicationController
     def index
       @all_ratings = Movie.all_ratings
       @ratings_to_show = Movie.all_ratings
-      if params[:ratings].nil? && !session[:ratings].nil?
-        redirect_to movies_path("ratings" => session[:ratings])
+      /if params[:ratings].nil? && !session[:ratings].nil?
+        redirect_to movies_path("ratings" => session[:ratings])/
+      if !params[:sort].nil?
+        session[:sort] = params[:sort]
+        @movies = Movie.order(session[:sort])
+      elsif !session[:sort].nil?
+        @movies = Movie.order(session[:sort])
       elsif not params[:ratings].nil?
         session[:ratings] = params[:ratings]
         @ratings_to_show = params[:ratings].keys
         @movies = Movie.where(rating: @ratings_to_show)
       else
         @movies = Movie.all
+      end
+      if !session[:sort].nil?
+        if session[:sort].eql?('title')
+          @penis = "bg-warning"
+        else
+          @peniss = "bg-warning"
+        end
       end
     end
   
